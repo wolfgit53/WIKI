@@ -68,3 +68,56 @@ En cas d'erreur fork() renvoi -1, et la variable *errno* contient le code d'erre
 Qui indique que le noyau n'a plus assez de mémoire disponible pour créer un nouveau processus.
 * EAGAIN
 Qui signale que le système n'a plus de place libre dans sa table des processus. Mais qu'il y en aura probablement sous peu.
+
+### Exemple ###
+Voici un exemple de création d'un processus fils par l'appel système fork() :
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <unistd.h>
+#include <errno.h>
+#include <sys/wait.h>
+
+int main()
+{
+    printf("Hello world!\n");
+
+    pid_t pid_fils;
+
+    do {
+        pid_fils = fork();
+    } while ((pid_fils == -1) && (errno == EAGAIN));
+
+    if (pid_fils == -1)
+    {
+        fprintf(stderr, "fork () impossible, errno=%d\n", errno);
+        return 1;
+    }
+    if (pid_fils == 0) {
+        fprintf(stdout, "Fils : PID=%d, PPID=%d\n", getpid(), getppid());
+        return 0;
+    } else {
+        fprintf(stdout, "Père : PID=%d, PPID=%d\n", getpid(), getppid());
+        wait(NULL);
+        return 0;
+    }
+}
+```
+Lors de son exécution on observe quelque choses comme cela :
+```bash
+./exemple_fork
+Père: PID=3133, PPID=3010, PID fils=3134
+Fils: PID=3134, PPID=3133
+```
+Le PPID correspond à celui du shell où l'on execute le programme.
+
+## Identification de l'utilisateur correspondant au processus ##
+
+Un système unix est particulièrement orienté vers l'identification des ses utilisateurs. Chaque processus s'exécute sous une identité précise. Il s'agit en général de l'identité du lanceur du programme. Il existe trois identifiants d'utilisateur par procéssus :
+* UID **réel**
+UID de l'utilisateur qui à lancé le programme.
+* UID **effectif**
+UID correspond aux privilège accordé au processus.
+* UID **sauvé**
+C'est une copie de l'ancien UID effectif lorsque celui-ci est modifié par le processus.
