@@ -121,3 +121,53 @@ UID de l'utilisateur qui à lancé le programme.
 UID correspond aux privilège accordé au processus.
 * UID **sauvé**
 C'est une copie de l'ancien UID effectif lorsque celui-ci est modifié par le processus.
+
+Lors d'une tentative d'accès à un fichier, le noyau effectue des vérification d'autorisation en prenant compte l'UID effectif du processus. Généralement l'UID effectif est le même que l'UID réel, pour les commandes classique (ls, cp, mv...) qui peuvent s'exécuter sans privilèges.
+
+Pour accéder aux UIDs nous avons des appel systèmes venant de <unistd.h> :
+* UID réel :
+```C
+uid_t getuid(void)
+```
+* UID effectif :
+```C
+uid_t geteuid(void)
+```
+
+Prenons en exemple le code suivant:
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main()
+{
+    fprintf(stdout, " UID réel = %u, UID effectif = %u\n", getuid(), geteuid());
+    return 0;
+}
+```
+En l'exécutant avec un utilisateur lambda :
+```bash
+./exemple_uid
+UID réel = 1000, UID effectif = 1000
+```
+Puis :
+```bash
+$ ./UID 
+ UID réel = 1000, UID effectif = 1000
+$ su
+Mot de passe : 
+ chown root.root UID
+ chmod +s UID 
+ ls -ln UID *
+-rwsr-sr-x 1 0 0 11512 janv. 29 22:37 UID
+-rwsr-sr-x 1 0 0 11512 janv. 29 22:37 UID
+ ./UID 
+ UID réel = 0, UID effectif = 0
+ exit
+exit
+ ./UID
+ UID réel = 1000, UID effectif = 0
+```
+
+Nous voyons que l'attribut Set-UID indiqué par la lettre "s" dans les autorisations d'accès. L'UID réel est conservé à des finsd'identification éventuelle au sein du processus. Notre programme ayant l'UID effectif de root en a tous les privilèges. Vous pouvez en avoir le coeur net en lui faisant, par exemple, créer un nouveau fichier
