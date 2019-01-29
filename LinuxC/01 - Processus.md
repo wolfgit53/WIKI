@@ -49,3 +49,22 @@ L'appel système de fork ce trouve dans <unistd.h>. On retrouve:
 ```C
 pid_t fork(void)
 ```
+
+Pour connaitre son propre identifiant PID, on utilise getpid() qui renvoi un type *pid_t*:
+```C
+pid_t getpid(void)
+```
+
+La création d'un processus fils à pour but de dialoguer avec. Le processus fils peut accéder au PID de sont processus père avec :
+```C
+pid_t getppid(void)
+```
+
+Lorsqu'un processus est créé par fork(), il dispose d'une copie des données de son père, également de l'environnement de celui ci, et d'un certain nombre d'autre paramètre. On parle d'**héritage** du père.
+
+Sous linux l'appel fork() est très économe car il utilise un methode de "copie sur écriture". Cela signifie que toute les données qui doivent être transmise ne sont pas tout de suite recopiées.
+En cas d'erreur fork() renvoi -1, et la variable *errno* contient le code d'erreur définis dans <errno.h>. La valeur peut être :
+* ENOMEM
+Qui indique que le noyau n'a plus assez de mémoire disponible pour créer un nouveau processus.
+* EAGAIN
+Qui signale que le système n'a plus de place libre dans sa table des processus. Mais qu'il y en aura probablement sous peu.
