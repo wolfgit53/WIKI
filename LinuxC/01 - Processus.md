@@ -43,4 +43,9 @@ Avec la commande **ps** on peut observer la liste des processus à l'instant t, 
 ## Identification par PID ##
 
 Le premier processus du système est *init*, il est directement créer par le noyau au démarrage. La seul manière de créer un nouveau processus est d'appeler l'appel-système **fork()** qui va dupliquer le processus appelant. Après cette appel, deux processus identique s'exécuteront.
+La différence essentielle entre ces deux processus est un numéro d'identification. Ce qui distingue le processus père et le processus fils. C'est le **PID** (Process IDentifier).
 
+L'appel système de fork ce trouve dans <unistd.h>. On retrouve:
+```C
+pid_t fork(void)
+```
