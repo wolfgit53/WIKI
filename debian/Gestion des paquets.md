@@ -81,3 +81,60 @@ DPKG est un outil très fiable. Avant de lancer une action DPKG vérifie que cel
 Mais il a un champs de vision limité du fait qu'il traite les paquets individuellement.
 
 ## DPKG et sa famille ##
+
+DPKG contient en réalité deux autres programmes : dpkg-deb et dpkg-query.
+* **dpkg** installe et supprime des paquets sur un système
+* **dpkg-deb** permet de manipuler les paquets
+* **dpkg-query** fournit un accès à la base de donnée de dpkg.
+Mais **dpkg** fournis l'interface avec les deux autres programmes. Qui peuvent être également lancé séparément.
+
+## Manipulation de paquets binaires ##
+
+Afficher les informations de contrôle de paquet :
+```bash
+dpkg-deb --info postfix_2.1.5-9_i386.deb
+```
+Il est possible de filtrer les champs obtenu dans le retour de la commande précédente avec l'option *--field*:
+```bash
+dpkg-deb --field postfix_2.1.5-9_i386.deb Version
+  2.1.5-9
+```
+
+Afficher la liste des fichiers qui s'installe avec le .deb :
+```bash
+dpkg-deb --contents postfix_2.1.5-9_i386.deb
+  drwxr-xr-x root/root      0 2005-03-11 02:05:22 ./var/spool/postfix/
+  [...]
+```
+
+Extraire les données de contrôle d'un .deb :
+```bash
+dpkg-deb --control postfix_2.1.5-9_i386.deb
+```
+Extraire les fichiers installables :
+```bash
+dpkg-deb --extract postfix_2.1.5-9_i386.deb
+ls -F *
+
+DEBIAN:
+conffiles control postinst* preinst* shlib [...]
+
+etc:
+init.d/ network/ postfix/
+usr:
+bin/ lib/ sbin/
+var:
+log/ spool/
+```
+
+Il est aussi possible de faire le chemin inverse, de creer une archive .deb :
+```bash
+mkdir pfpkg
+mv --target-directory=pfpkg DEBIAN etc usr var
+dpkg-deb --build pfpkg
+  dpkg-deb : construction du paquet "postfix" dans "pfkg.deb".
+file pfkg.deb
+pfpkg.deb: Debian binary package (format 2.0)
+dpkg-deb --field pfpkg.deb Version
+  2.1.5-9
+```
