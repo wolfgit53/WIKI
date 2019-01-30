@@ -246,3 +246,29 @@ Inspection de paquets individuels :
 ```bash
 dpkg --list ssh
 ```
+
+Recherche dans la liste des fichiers installés
+```bash
+dpkg-query --search /usr/lib/postfix/*d
+```
+Mais on peut aussi utiliser la commande **dlocate**:
+```bash
+dlocate -lsconf postfix
+```
+Afficher en plus les MD5 par exemple :
+```bash
+dlocate -md5check postfix
+```
+Suppression des paquets :
+Il existe deux manière de supprimer un paquet:
+* suppression
+On desinstalle le logiciel en gardant les fichiers de conf:
+```bash
+dpkg --remove postfix
+```
+* purge
+```bash
+dpkg --purge postfix
+```
+On supprime tout
+
