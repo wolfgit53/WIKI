@@ -13,3 +13,5 @@ L'adresse MAC (Medium Access Control) est un identifiant qui assure le partage d
   Partie haute de l'adresse, c'est l'identifiant du constructeur de la carte. Il est attribué par l'IEEE.
 * NIC (Network Interface Controler
   Est l'identifiant propre de la carte.
+
+![schema_mac_address](img/1024px-MAC-48_Address.svg.png)
