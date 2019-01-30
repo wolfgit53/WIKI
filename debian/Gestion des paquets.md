@@ -138,3 +138,111 @@ pfpkg.deb: Debian binary package (format 2.0)
 dpkg-deb --field pfpkg.deb Version
   2.1.5-9
 ```
+
+## Installation des paquets ##
+
+Installer un paquet .deb :
+```bash
+dpkg --install postfix_2.1.5-9_i386.deb
+```
+### Etape d'une installation ###
+
+#### Extraction ####
+La première étape est l'extraction réalisé par dpkg-deb, dpkg se contente de diriger la procédure :
+```bash
+dpkg --unpack postfix_2.1.5-9_i386.deb
+```
+
+1. Verifie que c'est bien un paquet Debian. Si oui l'information de contrôle est extraite et stockée de manière temporaire dans /var/lib/dpkg/temp.ci.
+2. Si preinst existe il est invoqué. Par exemple certain paquet arrète des service pendant l'installation.
+3. dpkg récupère dans le fichier de contrôle conffiles une liste de fichiers pour lesquels le traitement est spécial. Ces fichiers sont extrait dans un emplacement temporaire, puis dans la destination finale.
+4. dpkg extrait ensuite le reste (data.tar.gz) vers le système de fichiers.
+5. Puis les fichiers de contrôle sont envoyé dans le répertoire /var/lib/dpkg/info.
+6. Puis dpkg marque le paquet comme 'dépaqueté' dans sa base de donnée.
+
+#### Configuration ####
+Une fois installer la phase de configuration arrive.
+Manuellement on peut le faire avec :
+```bash
+dpkg --configure postfix
+```
+
+1. DPKG demande le comportement à avoir auprès de l'administrateur. Ecraser un fichier local, remplacer par le fichier nouveau du .deb, soit de garder le fichier local en l'état.
+2. postinst est exécuté si il existe. Si le paquet utilise la base de debconf il va y avoir intéraction avec l'utilisateur pour connaitre des paramètre de config. Mais debconf peut avoir déjà parametré pour répondre au questions.
+3. postinst doit apporter les modification au système si besoin, niveau périphérique par exemple.
+4. dpkg met à jour sa base de données:  le paquet est marqué installé
+
+Pour configurer tout paquet marqué 'dépaqueté' et non 'installé' on peut exécuter :
+```bash
+dpkg --configure -a
+```
+
+### Intéraction avec la base de données des paquets ###
+
+**DPKG** garde en mémoire tout paquets sur le système, même ceux supprimer et désinstallé par le passé.
+Cette base de donnée se trouve dans : '/var/lib/dpkg'.
+
+Les infos stockées :
+1. L'état du paquet (fichier status)
+2. Informations si le paquet est installé, ou supprimé (fichier status)
+3. La base de données des alternatives (fichier alternatives).
+4. La base de données des surcharges de permissions (fichier statoverride).
+5. Dans le sous répertoire **info/** la liste de tous les fichiers installés par le paquet,et celle des conffiles. Contient également les 4 script \*rm \*inst.
+6. Parfois les md5
+7. Les infos lié à debconf
+8. La liste des paquets dispo.
+
+Cette organisation en fichiers plats est la principale cause de lenteur de **dpkg**. 
+
+#### Manipulation de la base ####
+
+Afficher la liste de tout les paquets :
+```bash
+dpkg --list
+  Souhait=inconnU/Installé/suppRimé/Purgé/H=à garder
+| État=Non/Installé/fichier-Config/dépaqUeté/échec-conFig/H=semi-installé/W=attend-traitement-déclenchements
+|/ Err?=(aucune)/besoin Réinstallation (État,Err: majuscule=mauvais)
+||/ Nom                                   Version                                     Architecture Description
++++-=====================================-===========================================-============-===============================================================================
+ii  accountsservice                       0.6.43-1                                    amd64        query and manipulate user account information
+ii  acl                                   2.2.52-3+b1                                 amd64        Access control list utilities
+ii  adduser                               3.115                                       all          add and remove users and groups
+```
+
+La première colonne comporte deux lettres :
+La première lettres :
+**i**
+L'utilisateur a requis l'installation du paquet.
+**r**
+L'utilisateur a requis la suppression du paquet.
+**p**
+La purge
+**h**
+L'utilisateur a spécifier que ce paquet devait être figé (gardé dans sa version actuelle) et que aucune mise à jour ne peut inpacter.
+
+La seconde lettre:
+**n**
+paquet non installé
+**i**
+paquet completement installé et configurer
+**c**
+installé puis supprimer, mais on a garder ses conffiles
+**u**
+depaqueté mais pas configuré
+**f**
+la configuration a échoué.
+**h**
+Le paquet a été installé mais l'installation ne s'est pas terminé correctement
+
+Troisième lettre :
+**h**
+Le paquet est figé de manière forcé, car il constitue la dépendance d'un paquet mannuellement figé.
+**r**
+Paquet hors service
+**x**
+Paquet figé et cassé de manière forcée.
+
+Inspection de paquets individuels :
+```bash
+dpkg --list ssh
+```
