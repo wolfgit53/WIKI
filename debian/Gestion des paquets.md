@@ -270,5 +270,29 @@ dpkg --remove postfix
 ```bash
 dpkg --purge postfix
 ```
-On supprime tout
+On supprime tout même les fichiers de configurations.
 
+## Gestion des paquets : APT ##
+
+### L'outil ###
+
+Le problème de DPKG est la gestion des dépendances. C'est pour cela que l'on utilise APT (Advanced Package Tool). C'est un outils de haut niveau qui voit les paquets de manière abstraite. Il voit que :
+* un nom qui identifie le paquet
+* un num de version
+* une adresse URL pour le fichier DEB
+* des informations de dépendances
+
+APT ne traite pas directement l'installation et la suppression des paquets, mais délègue ces tâche a DPKG. Il gère simplement l'acquisition des dépendances, et l'orchestration des appels à DPKG.
+APT garde un liste des paquets disponibles, que l'admin met à jour avec ```bash apt update ```. A la suite, APT compile les informations réunis dans les paquets, et en déduis un arbres des dépendances en utilisant la théorie des graphes
+
+### Spécifier une source de paquets ###
+
+URI source :
+* **cdrom** permet d'accéder à des paquets stockés sur des lecteurs de CD-Rom locaux.
+* **file** permet d'utiliser un emplacement quelconque du système de fichier.
+* **copy** comme file mais copie dans le répertoire cache d'APT pour les stocker après l'acquisition.
+* **http** la methode la plus rapide et la plus recommandée.
+* **ftp** légèrement moins rapide que **http**, elle est néamoins plus flexible par la configuration à travers /etc/apt/apt.conf.
+* **ssh** déconseillé pour des raisons de sécurité.
+
+### miroir ###
