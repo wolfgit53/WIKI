@@ -295,4 +295,74 @@ URI source :
 * **ftp** légèrement moins rapide que **http**, elle est néamoins plus flexible par la configuration à travers /etc/apt/apt.conf.
 * **ssh** déconseillé pour des raisons de sécurité.
 
-### miroir ###
+### Configuration d'APT ###
+
+APT peut être en grande partie configuré grace au fichier **/etc/apt/apt.conf**.
+Cela fonctionne avec un système de clé valeur, dont la syntaxe est expliqué dans apt.conf.
+
+```bash
+APT::Cache-Limit 16777216;
+APT::Ge::Show-Upgraded true;
+APT::Get::Default-Release "sarge";
+APT::Get::Purge false;
+Acquire::Queue-Mode host;
+Acquire::Retries 0;
+```
+
+Dans /etc/apt/apt.conf on peut spécifier le comportement de DPKG. Par exemple pour ne jamais remplacer un paquet installé par une version plus ancienne, et de ne jamais réinstaller la version actuellement installée le code à insérer est:
+```bash
+DPkg {
+  Options { "--refuse-downgrade"; "--skip-same-version"; }
+  };
+```
+
+Crochets d'APT :
+On peut spécifier des commandes à effectuer à des moments précis. Par exemple sur certain système, /usr est monté en lecture seule. Pour réactiver l'écriture avant l'invocation de dpkg et pour la redésactiver après :
+```bash
+DPkg {
+  Pre-Invoke { "mount -o remount,rw /usr"; };
+  Post-Invoke { "mount -o remount,ro /usr"; };
+};
+```
+Il existe aussi Pre-Install-Pkgs, qui invoque ses commandes avant même celle de Pre-Invoke.
+
+### Utilisation d'APT ###
+
+Installer un paquet:
+```bash
+apt-get install postfix
+```
+
+Rechercher un paquet:
+```bash
+apt-cache search postfix
+```
+
+Afficher les infos d'un paquet:
+```bash
+apt-cache show postfix
+```
+
+Rechercher un fichier spécifique:
+```bash
+apt-file search /usr/bin/convert
+```
+
+Afficher les dépendances entre paquets:
+```bash
+apt-cache depends cmatrix
+```
+
+Réinstaller un paquet:
+```bash
+apt-get install --reinstall postfix
+```
+Suppression de paquet en gardant les confs:
+```bash
+apt-get remove postfix
+```
+
+Suppression total:
+```bash
+apt-get remove --purge postfix
+```
