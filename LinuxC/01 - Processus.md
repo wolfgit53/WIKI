@@ -175,4 +175,37 @@ Notre programme ayant UID effectif de root en a tous les privilèges. Vous pouve
 Il  existe  plusieurs  appels-système  permettant  à  un  processus  de  modifier  son  UID. Il ne peut toutefois s'agir que de  perdre des privilèges, éventuellement d'en retrouver des anciens, mais jamais d'en gagner. Imaginons un émulateur de  terminal série  (un peu comme kermit ou minicom). Il a besoin d'accéder à un périphérique système (le modem), même  en  étant  lancé  par n'importe  quel  utilisateur.  Il  dispose  donc  de  son  bit  Set-UID  activé, tout en appartenant à root. Cela lui permet d'ouvrir le fichier spécial correspondant au périphérique et de gérer la liaison.
 Toutefois,  il  faut  également  sauvegarder  sur  disque  des  informations  n'appartenant  qu'à  l'utilisateur  ayant  lancé  l'application  (sa  configuration  préférée  pour  l'interface,  par  exemple),  voire  enregistrer  dans  un  fichier  un historique  complet  de  la  session.  Pour  ce  faire,  le  programme  ne  doit  créer  des  fichiers  que  dans  des  endroits  où  l'utilisateur  est  autorisé à le faire. Plutôt que de vérifier toutes les autorisations d'accès, il est plus simple de  perdre  temporairement  ses  privilèges  root  pour  reprendre  l'identité  de  l'utilisateur original,  le  temps  de  faire  l'enregistrement (les  permissions  étant  alors vérifiées  par  le noyau), et de redevenir éventuellement root ensuite. Nous reviendrons à plusieurs reprises sur ce mécanisme.
 Le  troisième  type  d'UID  d'un  processus  est  l'UID  sauvé.  Il  s'agit  d'une  copie  de  l'ancien  UID effectif lorsque celui-ci est modifié par l'un des appels décrits ci-dessous. Cette copie est  effectuée  automatiquement  par  le  noyau.  Un  processus  peut  toujours  demander  à  changer  son  UID  effectif  ou  son  UID  réel  pour prendre  la  valeur  de  l'UID  sauvé.  Il  est  également possible de prendre en UID effectif la valeur de UID réel, et inversement. 32 Un processus avec le bit Set-UID positionné démarre donc avec un UID effectif différent de celui  de  l'utilisateur  qui  l'a  invoqué.  Quand  il  désire  effectuer  une  opération  non privilégiée. il peut demander à remplacer son UID effectif par l'UID réel. Une copie de l'UID effectif  est  conservée  dans  l'UID  sauvé.  Il pourra  donc  à  tout  moment  demander  à  remplacer à nouveau son UID effectif par son UID sauvé. Pour cela, il existe plusieurs appels-système permettant sous Linux de modifier son UID, et ayant tous une portabilité restreinte : setuid( ) est défini par Posix.1, seteuid( ) et  setreuid( ) appartiennent à BSD, 
-setresuid( ) est spécifique à Linux. 
+setresuid( ) est spécifique à Linux.
+
+
+# Memento #
+
+Processus :
+* PID
+  * PID
+  * PPID
+* UID
+  * UID réel
+  * UID effectif
+  * UID sauvé
+* GID
+  * GID réel
+  * GID effectif
+  * GID sauvé
+  * GID supplémentaires
+
+Processus :
+* PID (Process IDentifier) -> ** <unistd.h> ** 
+  * PID  -> pid_t getpid(void)
+  * PPID -> pid_t getppid(void)
+* UID (User IDentifier) -> ** <unistd.h> ** -> uid_t = %u
+  * UID réel     -> uid_t getuid(void)
+  * UID effectif -> uid_t geteuid(void)
+  * UID sauvé
+* GID (Group IDentifier) -> ** <unistd.h> ** + ** <sys/types.h> **
+  * GID réel            -> gid_t getgid(void)  -> int setgid(gid_t egid)
+  * GID effectif        -> gid_t getegid(void) -> int setegid(gid_t egid)
+  * GID sauvé           -> 
+  * GID supplémentaires -> int getgroups(int taille, gid_t liste[]) -> -1 trop petit
+* SID (Session IDentifier) ->
+  * SID -> pid_t getsid(pid_t pid) # id de session = id processus leader
