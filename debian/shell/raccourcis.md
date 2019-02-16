@@ -56,6 +56,7 @@ Le prompt du shell est afficher à chaque attente de commande. Il obtiens son co
 
 * \[ Les caractère non imprimable.Tel que la couleur.
 * \] Fin des chars non imprimable
+
 *Exemple:
 \[\033[1;34m\][\$(date +%H%M)][\u@\h:\w]$\[\033[0m\]*
 
