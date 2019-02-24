@@ -79,3 +79,33 @@ Avec -l pour lister les signaux possible.
 
 ## nohup ##
 Quand le shell est quitter le signal SIGHUP est envoyé à tout les enfants pour qu'ils se terminent. Il est possible d'éviter que le processus s'arrête avec **nohup**. Les canaux de sortie
+```bash
+nohup ls -lR / &
+```
+
+## nice et renice ##
+La commande **nice** permet de lancer un commande avec une priorité particulière.
+```bash
+nice -[valeur] commande [arguments]
+```
+La valeur doit être comprise entre -20 et 20. Plus la valeur est élevée et plus le traitement est ralenti.
+```bash
+nice -10 ls -lR / >liste 2>/dev/null&
+```
+
+**renice** fait pareil mais avec un utilisateur, un groupe ou un PID:
+```bash
+renice [-n prio] [-p] [-g] [-u] ID
+```
+
+## ; || && ##
+
+```bash
+(uname -a ; pwd ; ls -l) > resultat.txt &
+```
+
+### && ###
+la commande est exécutée si la précédente renvoie 0
+
+### || ###
+la commande est exécutée si la précédente renvoie autre chose que 0
