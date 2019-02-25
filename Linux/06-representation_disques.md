@@ -37,11 +37,39 @@ Les noms sont limité à 255 caractères.
 L'extension n'a pas d'existence en tant que composante du système de fichiers
 Le type est déterminé par le contenu, les premiers octets
 
-#### Les filesystems sous Linux ####
+### Les filesystems sous Linux ###
 
-##### ext2 #####
+#### ext2 ####
 - rapide
 - requiert moins d'écriture
 - usure amoindrit des disques
 - taille max fichier = 2To
 - taille max partition = 32 To
+- pas journalisé
+
+#### ext3 ####
+- journalisé
+- souple
+- taille max fichier = 2 To
+- taille max partition = 32 To
+
+#### reiserfs ####
+- journalisation efficace
+- organisation indexée des entrées des répertoires
+- manipulation des fichiers de petite taille
+- performance exceptionnelles avec de milliers de petit fichiers
+- performance faible avec des moyens fichiers
+- redimensionnable à chaud
+- lent sur les gros fichiers
+- taille max fichier = 8 To
+- taille max partition = 16 To
+
+### Partitionnement ###
+
+#### Organisation d'un disque ####
+
+##### MBR #####
+**M**aster **B**oot **R**ecord
+Taille de 512 octets
+Programme d'amorçage sur 444 octet
+
