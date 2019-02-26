@@ -4,9 +4,9 @@
 
 ![schema](img/ordredem.png)
 
-### BIOS ###
+### BIOS - **B**asic **I**nput **O**utput **S**ystem ###
 
-**B**asic **I**nput **O**utput **S**ystem
+
 
 Vérification:
 * Processeur
