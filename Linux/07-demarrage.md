@@ -22,3 +22,11 @@
 
 Placé sur le premier secteur adressable d'un disque dur:
 * cylindre 0, tête 0 et secteur 1, ou secteur 0 en adressage logique
+
+Taille de 512 octets:
+* **446** octets de code exécutable démarré juste après le BIOS
+* **64** octets constitué de la table des partition
+* **2** octets contiennent le magic number (0x55AA)
+
+![MBR](img/MBR.png)
+
