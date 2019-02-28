@@ -55,3 +55,7 @@ modprobe -r vfat
 ```
 
 Dans le fichier **/etc/modprobe.conf** nous pouvons configurer les modules à charger
+
+## Paramètres dynamiques ##
+
+**/proc** et **/sys** sont des systèmes de fichiers virtuels contenant des informations sur le noyau en cours d'exécution.
