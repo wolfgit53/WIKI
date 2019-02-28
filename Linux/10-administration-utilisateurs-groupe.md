@@ -115,3 +115,56 @@ groupmod -R seb amis
 groupdel
 ```
 
+## Vérifier la cohérence ##
+La commande **pwck** vérifie la validité des fichiers /etc/passwd /etc/shadow.
+
+## Vérifier les connexions ##
+```bash
+lastlog -u seb
+lastlog -t 10
+```
+
+## su ##
+Su permet de changer de compte. Mais cela comprend la concervation de l'environnement de l'utilisateur actuel. Pour demander l'environnement du nouvel utilisateur on utilise le - après su:
+```bash
+su - root
+```
+
+# Configuration Avancé #
+
+## Configuration par defaut ##
+
+### /etc/default/useradd ###
+Contient un certain nombre de variables définissant les règles par défaut à appliquer à la création d'un utilisateur.
+
+### /etc/default/passwd ###
+Pareil pour les mot de passe. L'algo de chiffrement par exemple
+
+### /etc/login.defs ###
+Règle de validité des compte
+UID min et max lors de la création d'un utilisateur
+GID min et max lors de la création d'un groupe
+règle par défaut pour la validité des mot de passe
+la création ou non d'un répertoire personnel
+
+## Notifications à l'utilisateur ##
+
+### /etc/issue ###
+Message afficher avant l'invite de saisie de son login
+
+### /etc/issue.net ###
+Pareil mais avant la connection via internet, ssh, telnet, etc.
+
+### /etc/motd ###
+motd veut dire Message Of The Day. Cela veut dire que après l'authentification réussie, on va afficher un message. Cela peut être une info de maintenance.
+
+
+## Environnement utilisateur ##
+
+### /etc/skel ###
+Ceci est le dossier qui contient un squelette utilisé pour créer un répertoire personnel.
+
+### script de configuration ###
+/etc/profile : définie les variables d'environnement important
+/etc/profile.d
+~/.bash_profile :
