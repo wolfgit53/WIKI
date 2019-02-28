@@ -11,8 +11,11 @@ Ces modes dfférencient le type d'échange de données entre les module de gesti
 En mode **bloc** le système accède au périphérique via un index qui représente les coordonnées du bloc de données sur le support. Il est donc plus rapide pour les périphériques comme les disques.
 
 • /dev/mem : la mémoire physique
+
 • /dev/kmem : la m é m o i r e v i r t u e l l e du n o y a u .
+
 • /dev/console : la console m a î t r e ( / d e v / s y s c o n ) .
+
 • /dev/tty : l ’ e n t r é e / s o r t i e s t a n d a r d du p r o c e s s u s en c o u r s .
 • /dev/mouse : la souris, souvent un raccourci.
 • /dev/swap : le disque swap primaire.
