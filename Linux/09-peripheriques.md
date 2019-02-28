@@ -17,23 +17,95 @@ En mode **bloc** le système accède au périphérique via un index qui représe
 • /dev/console : la console m a î t r e ( / d e v / s y s c o n ) .
 
 • /dev/tty : l ’ e n t r é e / s o r t i e s t a n d a r d du p r o c e s s u s en c o u r s .
+
 • /dev/mouse : la souris, souvent un raccourci.
+
 • /dev/swap : le disque swap primaire.
+
 • /dev/null : la poubelle UNIX. On peut y écrire. La lecture provoque un EOF.
+
 • /dev/root : système de fichier spécial root.
+
 • /dev/dump : le disque dans le quel le noyau fait son dump en cas de panique  système.
+
 • /dev/rmt0 : lecteur de bande magnétique ou de cartouche en mode caractère.
+
 • /dev/fd0 : lecteur de d i s q u e t t e s en m o d e b l o c .
+
 • /dev/pts/1 : i d e m mais pour Unix SYSTEM V ( e t L i n u x ) .
+
 • /dev/lp0 : une imprimante parallèle.
+
 • /dev/ttyS0 : port COM1.
+
 • /dev/ttyS1 : port COM2.
+
 • /dev/psaux : port PS2 pour la souris.
+
 • /dev/sound : carte son.
+
 • /dev/dsp : contrôleur DSP de la carte son.
+
 • /dev/sequencer : séquenceur MIDI de la carte son .
+
 • /dev/ide/* : les périphériques IDE.
+
 • /dev/scsi/* : les périphériques SCSI .
-© ENI Editions - All rigths reserved -• /dev/usb/* : les périphériques USB.
+
+• /dev/usb/* : les périphériques USB.
+
 • /dev/hdX : les disques IDE.
+
 • /dev/sdX : les disques SATA ou SCSI.
+
+
+## Connaître son matériel ##
+
+### Bus PCI ###
+La commande **lspci** fournit des informations détaillées sur les cartes et adapteurs reliés au bus PCI:
+```bash
+lspci
+```
+Pour préciser les détails sur un adaptateur:
+```bash
+lspci -vv -s 02:03.0
+```
+
+### Bus USB ###
+En ce qui concerne les Bus USB:
+```bash
+lsusb
+```
+Plus en détail sur un équipement:
+```bash
+lsusb -d 046d:092e
+```
+
+### Ressources matérielles ###
+```bash
+cat /proc/interrupts
+```
+
+### Plages d'adresses d'entrées-sortie ###
+```bash
+cat /proc/ioports
+```
+
+### Périphériques (bloc, caractère) ###
+```bash
+cat /proc/devices
+
+cat /proc/partitions
+```
+
+### Processeurs ###
+```bash
+cat /proc/cpuinfo
+```
+
+### Autres outils ###
+```bash
+hwinfo
+
+dmidecode
+```
